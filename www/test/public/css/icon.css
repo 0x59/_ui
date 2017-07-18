@@ -18,50 +18,50 @@
 }
 
 .icon-svg-left-arrow {
-	background-image: url('/svg/left-arrow.svg');
+	background-image: url('../svg/left-arrow.svg');
 }
 
 .icon-svg-right-arrow {
-	background-image: url('/svg/right-arrow.svg');
+	background-image: url('../svg/right-arrow.svg');
 }
 
 .icon-svg-down-arrow {
-	background-image: url('/svg/down-arrow.svg');
+	background-image: url('../svg/down-arrow.svg');
 }
 
 .icon-svg-up-arrow {
-	background-image: url('/svg/up-arrow.svg');
+	background-image: url('../svg/up-arrow.svg');
 }
 
 .icon-svg-menu-text {
-	background-image: url('/svg/menu-text.svg');
+	background-image: url('../svg/menu-text.svg');
 }
 
 .icon-svg-menu-grid {
-	background-image: url('/svg/menu-grid.svg');
+	background-image: url('../svg/menu-grid.svg');
 }
 
 .icon-svg-menu-expand {
-	background-image: url('/svg/menu-expand.svg');
+	background-image: url('../svg/menu-expand.svg');
 }
 
 .icon-svg-menu-drop {
-	background-image: url('/svg/menu-drop.svg');
+	background-image: url('../svg/menu-drop.svg');
 }
 
 .icon-svg-expand {
-	background-image: url('/svg/expand.svg');
+	background-image: url('../svg/expand.svg');
 }
 
 .icon-svg-contract {
-	background-image: url('/svg/contract.svg');
+	background-image: url('../svg/contract.svg');
 }
 
 .icon-svg-previous {
-	background-image: url('/svg/previous.svg');
+	background-image: url('../svg/previous.svg');
 }
 
 .icon-svg-next {
-	background-image: url('/svg/next.svg');
+	background-image: url('../svg/next.svg');
 }
 

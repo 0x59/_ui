@@ -1,0 +1,67 @@
+.icon {
+	flex-shrink: 0;
+	border-radius: 0.25rem;
+	height: 1rem;
+	width: 1rem;
+	padding: 0.375rem;
+	margin: 0.125rem;
+}
+
+.icon:hover {
+	background-color: #999;
+}
+
+.icon-svg {
+	background-size: 0.6875rem 0.6875rem;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.icon-svg-left-arrow {
+	background-image: url('/svg/left-arrow.svg');
+}
+
+.icon-svg-right-arrow {
+	background-image: url('/svg/right-arrow.svg');
+}
+
+.icon-svg-down-arrow {
+	background-image: url('/svg/down-arrow.svg');
+}
+
+.icon-svg-up-arrow {
+	background-image: url('/svg/up-arrow.svg');
+}
+
+.icon-svg-menu-text {
+	background-image: url('/svg/menu-text.svg');
+}
+
+.icon-svg-menu-grid {
+	background-image: url('/svg/menu-grid.svg');
+}
+
+.icon-svg-menu-expand {
+	background-image: url('/svg/menu-expand.svg');
+}
+
+.icon-svg-menu-drop {
+	background-image: url('/svg/menu-drop.svg');
+}
+
+.icon-svg-expand {
+	background-image: url('/svg/expand.svg');
+}
+
+.icon-svg-contract {
+	background-image: url('/svg/contract.svg');
+}
+
+.icon-svg-previous {
+	background-image: url('/svg/previous.svg');
+}
+
+.icon-svg-next {
+	background-image: url('/svg/next.svg');
+}
+

@@ -1,0 +1,24 @@
+.screen {
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	background-color: #222;
+	height: 100%;
+	width: 100%;
+}
+
+.dock-left {
+	box-shadow: inset 1.5em 0px 2em -1.75em rgba(255,247,135,1); 
+}
+
+.dock-right {
+	box-shadow: inset -1.5em 0px 2em -1.75em rgba(255,247,135,1); 
+}
+
+.dock-top {
+	box-shadow: inset 0px 1.5em 2em -1.75em rgba(255,247,135,1); 
+}
+
+.dock-bottom {
+	box-shadow: inset 0px -1.5em 2em -1.75em rgba(255,247,135,1); 
+}

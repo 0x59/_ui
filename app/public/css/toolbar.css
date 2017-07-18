@@ -1,0 +1,50 @@
+.toolbar {
+	position: absolute;
+	display: flex;
+	border-radius: 0.25rem;
+	background-color: #777;
+	height: 2rem;
+	overflow: hidden;
+	box-shadow: inset 0 0 0.5rem 0 rgba(0,0,0,0.4);
+}
+
+.toolbar-flex {
+	display: flex;
+	flex: auto;
+	/* 	required for flex container to not be constrained in size by children,
+		that is, to take width by size of parent rather than overflowing parent
+		due to children */
+	overflow: hidden;
+}
+
+.toolbar-docked {
+	border-radius: 0;
+}
+
+.handle {
+	flex: none;
+	cursor: col-resize;
+	border-radius: 0.25rem;
+	background-color: #444;
+	background-clip: content-box;
+	margin: 0.125rem 0;
+	padding: 0.25rem 0.1875rem;
+	height: 1.25rem;
+	width: 0.0625rem;
+}
+
+.handle:hover {
+	background-color: #555;
+}
+
+.hide-handle {
+	display: none;
+}
+
+.left-handle {
+}
+
+.right-handle {
+}
+
+

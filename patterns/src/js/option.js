@@ -1,17 +1,8 @@
+import _, { TYPES } from './utility.js'
+
 const
 	WARN = 1,
-	TYPES = {
-		STR: 'string',
-		FN: 'function',
-		OBJ: 'object',
-		NUM: 'number',
-		BOOL: 'boolean',
-		SYM: 'symbol',
-		UNDEF: 'undefined'
-	},
 	DEFAULT_DELIMITER = ' '
-
-Object.freeze(TYPES)
 
 export default class UiOption {
 	static makeDefaultDescriptor() {
@@ -79,19 +70,19 @@ export default class UiOption {
 	}
 
 	_validateValue() {
-		let hasValue = Object.prototype.hasOwnProperty.call(this._descriptor, 'value'),
-			hasDefault = Object.prototype.hasOwnProperty.call(this._descriptor, 'dflt'),
+		let hasValue = this._descriptor.hasOwnProperty('value'),
+			hasDefault = this._descriptor.hasOwnProperty('dflt'),
 			{ type, dflt, validator, value, values } = this._descriptor
-
+		
 		if( hasValue ) {
 			if( Object.keys(this._descriptor).length === 1 ) {
 				return
 			}
-		
+
 		} else if( hasDefault ) {
 			this._descriptor.value = dflt
 			return
-			
+
 		} else {
 			throw new Error('Value or default value must be specified')
 		}
@@ -131,5 +122,9 @@ export default class UiOption {
 		if( validator && !validator(values) ) {
 			throw new Error('Value failed custom validation')
 		}
+	}
+
+	value() {
+		return this._descriptor.value
 	}
 }

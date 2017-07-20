@@ -1,95 +1,91 @@
-import _ from './utility.js'
+import _, { TYPES } from './utility.js'
 import UiOption from './option.js'
 
+const
+	WARN = 1,
+	INFO = 1,
+	{ UNDEF, STR, BOOL, NUM, FN, OBJ, SYM } = TYPES
+
 export default class UiOptions {
-	constructor( options = {}, defOptions = {}, descriptors = {}, base = false ) {		
+	constructor( options = {}, superOptions = {}, descriptors = {}, base = false ) {		
 		let $
 
-		if( typeof defOptions !== TYPES.OBJ ) {
-			throw new Error('Defined options not an object')
+		if( typeof superOptions !== OBJ ) {
+			throw new Error('Super options not an object')
 		}
 		
-		if( typeof descriptors !== TYPES.OBJ ) {
+		if( typeof descriptors !== OBJ ) {
 			throw new Error('Descriptors not an object')
 		}
 		
 		if( options instanceof UiOptions ) {
 			$ = options
 
-			$.$addDescriptors(descriptors)
-
-		} else if( typeof options === TYPES.OBJ ) {
+		} else if( typeof options === OBJ ) {
 			$ = this
 
-			$._options = new Map()
-			$._pending = {}
+			Object.defineProperty($, '_options', {
+				value: new Map()
+			})
 			
-			$.$addDescriptors(descriptors)
+			Object.defineProperty($, '_pending', {
+				value: new Map()
+			})
+			
 			$.$addOptions(options)
 
 		} else {
 			throw new Error('Passed options not a UiOptions instance or object')
 		}
-
-		$.$addOptions(defOptions)
-
-		if( !!base ) {
-			$.$addBareOptions()
-		}
+		
+		$.$addOptions(superOptions)
+		$.$addDescriptors(descriptors)
+		$.$checkPendingOptions(!!base)
 
 		return $
 	}
 
 	$addDescriptors( descriptors ) {
-		let option
-
 		for( const [name, des] of Object.entries(descriptors) ) {
 			if( this._options.has(name) ) {
-				throw new Error('Duplicate option descriptor encountered')
+				throw new Error('Duplicate descriptor defined for class option [%s]', name)
 			}
-			this._options.set(name, new UiOption(des))
+			this._options.set(name, new UiOption(des, name))
 
 			Object.defineProperty(this, name, {
+				enumerable: true,
 				get: () => this._options.get(name).value()
 			})
 		}
-
-		this.$checkPendingOptions()
 	}
 
 	$addOptions( options ) {
-		let option
-
 		for( const [name, option] of Object.entries(options) ) {
 			if( this._options.has(name) ) {
 				this._options.get(name).value(option)
 
 			} else {
-				if( !this._pending[name] ) {
-					this._pending[name] = []
+				if( !this._pending.has(name) ) {
+					this._pending.set(name, [])
 				}
-				this._pending[name].push(option)
+				this._pending.get(name).push(option)
 			}
 		}
 	}
 
-	// todo: merge
-	$addBareOptions() {
-		for( const [name, optionList] of Object.entries(this._pending) ) {
-			WARN && console.warn('No descriptor defined for class option [%s]', name)
-			
-			Object.defineProperty(this, name, {
-				get: () => this._pending[name][0]
-			})
-		}
-	}
-	
-	// todo: merge
-	$checkPendingOptions() {
-		for( const [name, optionList] of Object.entries(this._pending) ) {
+	$checkPendingOptions( base = false ) {
+		for( const [name, optionList] of this._pending ) {
 			if( this._options.has(name) ) {
-				this._options.get(name).value(optionList[0])
-				this._pending[name] = void 0
+				this._options.get(name).values(this._pending.get(name), true)
+				this._pending.delete(name)
+			
+			} else if( base ) {
+				WARN && console.warn('No descriptor defined for class option [%s]', name)
+				
+				Object.defineProperty(this, name, {
+					enumerable: true,
+					get: () => this._pending.get(name)[0]
+				})
 			}
 		}
 	}

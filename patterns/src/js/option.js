@@ -1,80 +1,87 @@
-import _, { TYPES } from './utility.js'
+import { TYPES } from './utility.js'
 
 const
+	INFO = 1,
 	WARN = 1,
+	{ UNDEF, STR, BOOL, NUM, FN, OBJ, SYM } = TYPES,
 	DEFAULT_DELIMITER = ' '
 
 export default class UiOption {
 	static makeDefaultDescriptor() {
 		return {
 			merge: false,
-			type: TYPES.STR,
+			type: STR,
 			dflt: ''
 		}
 	}
 	
-	constructor( descriptor = {} ) {
+	constructor( descriptor = {}, name = 'unknown' ) {
+		this._name = name
 		this._validateDescriptor(descriptor)
 		this._validateValue()
 	}
 
 	_validateDescriptor( descriptor ) {
-		if( typeof descriptor !== TYPES.OBJ ) {
-			throw new Error('Option descriptor not an object')
+		if( typeof descriptor !== OBJ ) {
+			throw new Error('[%s] option descriptor not an object', this._name)
 		}
 
-		this._descriptor = Object.assign(makeDefaultDescriptor, descriptor)
+		this._descriptor = Object.assign(UiOption.makeDefaultDescriptor(), descriptor)
 
 		let { merge, delimiter, type, validator, values } = this._descriptor
 
 		if( type !== void 0 ) {
-			if( typeof type === TYPES.STR ) {
-				if( !TYPES.values().includes(type) ) {
-					throw new Error('String type specification must be valid against the typeof operator')
+			if( typeof type === STR ) {
+				if( !Object.values(TYPES).includes(type) ) {
+					throw new Error('[%s] descriptor type string must be valid against the typeof operator', this._name)
 				}
 			
-			} else if( typeof type !== TYPES.FN ) {
-				throw new Error('Type is not a string or function')
+			} else if( typeof type !== FN ) {
+				throw new Error('[%s] descriptor type is not a string or function', this._name)
 			}
 		}
 
-		if( merge !== void 0 && typeof merge !== TYPES.BOOL ) {
-			throw new Error('Merge is not boolean')
+		if( merge !== void 0 && typeof merge !== BOOL ) {
+			throw new Error('[%s] descriptor merge is not boolean', this._name)
 		}
 
 		if( merge ) {
-			if( delimiter !== void 0 && typeof delimiter !== TYPES.STR ) {
-				throw new Error('Delimiter is not a string')
+			if( delimiter !== void 0 && typeof delimiter !== STR ) {
+				throw new Error('Delimiter not a string', this._name)
 			}
 
-			if( delimiter === void 0 && type === TYPES.STR ) {
+			if( delimiter === void 0 && type === STR ) {
 				this._descriptor.delimiter = DEFAULT_DELIMITER
 			}
 
 		} else if( delimiter !== void 0 ) {
 			this._descriptor.delimiter = void 0
-			WARN && console.warn('Delimiter ignored when not merging')
+			WARN && console.warn('Delimiter ignored when not merging', this._name)
 		}
 
 		if( values !== void 0 ) {
-			if( typeof values !== TYPES.OBJ && !Array.isArray(values) ) {
-				throw new Error('Values must be specified as an array or object')
+			if( typeof values !== OBJ && !Array.isArray(values) ) {
+				throw new Error('Values must be specified as an array or object', this._name)
 			}
 		}
 
 		if( validator !== void 0 ) {
-			if( typeof validator !== TYPES.FN ) {
-				throw new Error('Custom validator must be callable')
+			if( typeof validator !== FN ) {
+				throw new Error('Custom validator must be callable', this._name)
 			}
 		}
 	}
 
-	_validateValue() {
-		let hasValue = this._descriptor.hasOwnProperty('value'),
+	_validateValue( v ) {
+		let argValue = !!arguments.length,
+			hasValue = this._descriptor.hasOwnProperty('value'),
 			hasDefault = this._descriptor.hasOwnProperty('dflt'),
-			{ type, dflt, validator, value, values } = this._descriptor
+			{ type, dflt, validator, merge, value, values } = this._descriptor
 		
-		if( hasValue ) {
+		if( argValue ) {
+			value = v
+		
+		} else if( hasValue ) {
 			if( Object.keys(this._descriptor).length === 1 ) {
 				return
 			}
@@ -84,47 +91,129 @@ export default class UiOption {
 			return
 
 		} else {
-			throw new Error('Value or default value must be specified')
+			throw new Error('[%s] descriptor definition must includes a value or a default value', this._name)
 		}
 
 		if( type !== void 0 ) {
-			if( type === TYPES.STR ) {
+			if( typeof type === STR ) {
 				if( typeof value !== type ) {
-					throw new Error('Value not of type: ' + type)
+					throw new Error('[%s] option value not of type: %s', this._name, type)
 				}
 			
-			} else if( type === TYPES.FN ) {
+			} else if( typeof type === FN ) {
 				if( !(value instanceof type) ) {
-					throw new Error('Value not an instance of: ' + type)
+					throw new Error('[%s] option value not an instance of: %s', this._name, type.name)
 				}
 
 			} else {
-				WARN && console.warn('Option type checking skipped')
+				WARN && console.warn('[%s] option type checking skipped due to unsupported type validation', this._name)
+			}
+		}
+
+		// todo: plain object checking
+		if( merge ) {
+			if( type !== STR && type !== OBJ && !Array.isArray(value) ) {
+				throw new Error('[%s] option merging can only be performed on arrays, strings, and plain objects', this._name)
 			}
 		}
 
 		if( values ) {
 			if( Array.isArray(values) ) {
 				if( !values.includes(value) ) {
-					throw new Error('Value not found in acceptable values')
+					INFO && console.dir(value)
+					throw new Error('[%s] value not in valid values', this._name)
 				}
 
-			} else if( typeof values === TYPES.OBJ ) {
-				if( !values.values().includes(value) ) {
-					throw new Error('Value not found in acceptable values')
+			} else if( typeof values === OBJ ) {
+				if( !Object.values(values).includes(value) ) {
+					INFO && console.dir(value)
+					throw new Error('[%s] value not in valid values', this._name)
 				}
 				
 			} else {
-				WARN && console.warn('Values type checking skipped')
+				WARN && console.warn('[%s] values type checking skipped due to unsupported validation', this._name)
 			}
 		}
 
-		if( validator && !validator(values) ) {
-			throw new Error('Value failed custom validation')
+		if( validator && !validator(value) ) {
+			throw new Error('[%s] value failed custom validation', this._name)
 		}
 	}
 
-	value() {
-		return this._descriptor.value
+	// todo: deep merge, plain object checking
+	_mergeValue( v ) {
+		if( typeof v === STR ) {
+			this._descriptor.value += this._descriptor.value ? this._descriptor.delimiter + v : v
+
+		} else if( Array.isArray(v) ) {
+			this._descriptor.value = this._descriptor.value.concat(v)
+		
+		} else if( typeof v === OBJ ) {
+			Object.assign(this._descriptor.value, v)
+		}
+	}
+
+	_shiftValues() {
+		let	{ type, value } = this._descriptor
+
+		if( type === STR ) {
+			this._descriptor.value = ''
+
+		} else if( Array.isArray(value) ) {
+			this._descriptor.value = []
+		
+		} else if( type === OBJ ) {
+			this._descriptor.value = {}
+		
+		} else {
+			throw new Error('Unsupported merge type encountered while shifting values for option [%s]', this._name)
+		}
+
+		return value
+	}
+
+	value( v ) {
+		if( !arguments.length ) {
+			return this._descriptor.value
+		}
+		
+		this._validateValue(v)
+
+		if( this._descriptor.merge ) {
+			this._mergeValue(v)
+
+		} else {
+			this._descriptor.value = v
+		}
+	}
+
+	values( arr , shift = false ) {
+		let shiftValues
+
+		if( !Array.isArray(arr) ) {
+			WARN && console.warn('[%s] option values must be specified in an array: treated as single value', this._name)
+			this.value(arr)
+			return
+		}
+
+		if( this._descriptor.merge ) {
+			if( shift ) {
+				shiftValues = this._shiftValues()
+			}
+
+			for( let v of arr ) {
+				this.value(v)
+			}
+			
+			if( shift && shiftValues ) {
+				this.value(shiftValues)
+			}
+		
+		} else {
+			if( arr.length > 1 ) {
+				WARN && console.warn('[%s] option descriptor ignored pending options while not merging', this._name)
+			}
+			this.value(arr[0])
+		}
 	}
 }

@@ -1,4 +1,4 @@
-import _, { TYPES } from './utility.js'
+import { TYPES } from './utility.js'
 import UiOption from './option.js'
 
 const

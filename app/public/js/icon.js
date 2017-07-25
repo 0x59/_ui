@@ -1,30 +1,15 @@
 import _ from './utility.js'
+import UiOptions from './options.js'
 import UiElement from './element.js'
-import Core from './core.js'
 
-export default class extends UiElement { 
+export default class UiIcon extends UiElement { 
 
 	constructor( options = {} ) {
-		super(Object.assign({
+		super(new UiOptions(options, {
 			tag: 'div',
-			classes: 'icon',
-			imageTypeClass: 'icon-svg',
-			imageClass: ''
-		}, options))
+			classes: 'icon icon-svg'
+		}))
 
-		let { imageTypeClass, imageClass } = this._options
-		
-		if( _.nStr(imageTypeClass) ) {
-			throw new Error('image type class not a string')
-		}
-		
-		if( _.nStr(imageClass) ) {
-			throw new Error('image class not a string')
-		}
-		
-		_.addCss(this._el, imageTypeClass, imageClass)
-		
 		this.render()
 	}
-
 }

@@ -3,6 +3,7 @@ import { TOPICS as T_SET } from './set.js'
 import CURSOR from './CURSOR.js'
 
 import _ from './utility.js'
+import UiOptions from './options.js'
 import UiElement from './element.js'
 import UiSet from './set.js'
 import Core from './core.js'
@@ -17,11 +18,17 @@ const
 export default class UiToolbar extends UiElement { 
 
 	constructor( options = {} ) {
-		super(Object.assign({
+		super(new UiOptions(options, {
 			tag: 'div',
-			classes: 'toolbar',
-			sets: []
-		}, options))
+			classes: 'toolbar'
+		}, {
+			sets: {
+				type: Array,
+				dflt: []
+			}
+		}))
+
+		let { sets } = this._options
 
 		this._sets = []
 		this._anchors = null
@@ -31,8 +38,6 @@ export default class UiToolbar extends UiElement {
 			width: 0,
 			height: 0
 		}
-
-		let { sets } = this._options
 
 		this._initCallbacks()
 		this._initSubscriptions()

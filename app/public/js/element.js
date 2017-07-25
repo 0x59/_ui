@@ -1,25 +1,31 @@
-import _ from './utility.js'
+import _, { TYPES } from './utility.js'
+import UiOptions from './options.js'
+
+const
+	{ UNDEF, STR, BOOL, NUM, FN, OBJ, SYM } = TYPES
 
 export default class UiElement { 
 
 	constructor( options = {} ) {
-		this._options = Object.assign({
-			parent: null,
-			tag: '',
-			classes: ''
-		}, options)
+		this._options = new UiOptions(options, {}, {
+			parent: {
+				type: HTMLElement,
+				dflt: null
+			},
+			tag: {
+				type: STR,
+				dflt: ''
+			},
+			classes: {
+				type: STR,
+				dflt: '',
+				merge: true
+			}
+		}, true)
 
 		let { parent, tag, classes } = this._options
 		
 		this.parent(parent)
-
-		if( _.nStr(tag) ) {
-			throw new Error('Tag not a string')
-		}
-		
-		if( _.nStr(classes) ) {
-			throw new Error('Classes not a string')
-		}
 
 		if( tag ) {
 			this._el = _.el(tag)

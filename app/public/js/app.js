@@ -1,25 +1,29 @@
+import T from './TOPICS.js'
 import _ from './utility.js'
 import Core from './core.js'
-import Screen from './screen.js'
-import Toolbar from './toolbar.js'
+import UiScreen from './screen.js'
+import UiToolbar from './toolbar.js'
 import UiIcon from './icon.js'
 import UiSet from './set.js'
+
+const
+	INFO = 1
 
 _.ready(() => {
 	const
 		doc = document,
 		body = doc.body
 	
-	let screen = new Screen({
+	let screen = new UiScreen({
 			parent: body
 		}),
 		navButtons = new UiSet({
 			items: [
 				new UiIcon({
-					imageClass: 'icon-svg-left-arrow'
+					classes: 'icon-svg-left-arrow'
 				}),
 				new UiIcon({
-					imageClass: 'icon-svg-right-arrow'
+					classes: 'icon-svg-right-arrow'
 				})
 			],
 			resizeHandle: null
@@ -27,40 +31,40 @@ _.ready(() => {
 		pageButtons = new UiSet({
 			items: [
 				new UiIcon({
-					imageClass: 'icon-svg-up-arrow'
+					classes: 'icon-svg-up-arrow'
 				}),
 				new UiIcon({
-					imageClass: 'icon-svg-down-arrow'
+					classes: 'icon-svg-down-arrow'
 				})
 			]
 		}),
 		menuButtons = new UiSet({
 			items: [
 				new UiIcon({
-					imageClass: 'icon-svg-menu-text'
+					classes: 'icon-svg-menu-text'
 				}),
 				new UiIcon({
-					imageClass: 'icon-svg-menu-grid'
+					classes: 'icon-svg-menu-grid'
 				}),
 				new UiIcon({
-					imageClass: 'icon-svg-menu-expand'
+					classes: 'icon-svg-menu-expand'
 				}),
 				new UiIcon({
-					imageClass: 'icon-svg-menu-drop'
+					classes: 'icon-svg-menu-drop'
 				})
 			]
 		}),
 		viewButtons = new UiSet({
 			items: [
 				new UiIcon({
-					imageClass: 'icon-svg-expand'
+					classes: 'icon-svg-expand'
 				}),
 				new UiIcon({
-					imageClass: 'icon-svg-contract'
+					classes: 'icon-svg-contract'
 				})
 			]
 		}),
-		toolbar = new Toolbar({
+		toolbar = new UiToolbar({
 			parent: screen.el(),
 			sets: [
 				navButtons,
@@ -70,7 +74,7 @@ _.ready(() => {
 			]
 		})
 
-	Core.subscribe('/screen/size', ( topic, data ) => {
+	INFO && Core.subscribe(T.SCREEN_SIZE, ( topic, data ) => {
 		console.info(data.width + 'px  ' + data.height + 'px ')
 	})
 })

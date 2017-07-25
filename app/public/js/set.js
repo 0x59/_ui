@@ -1,17 +1,19 @@
 import T from './TOPICS.js'
 import CURSOR from './CURSOR.js'
+import _, { TYPES } from './utility.js'
 
 import mix from './mixin.js'
 import PubSubMixin from './pubsub.js'
 
-import _ from './utility.js'
 import UiElement from './element.js'
+import UiOptions from './options.js'
 import Core from './core.js'
 
 const
 	LOG = 0,
 	INFO = 0,
 	WARN = 0,
+	{ UNDEF, STR, BOOL, NUM, FN, OBJ, SYM } = TYPES,
 	MIN_SET_SIZE = 0,
 	RESIZE_HANDLE_POSITION_LEFT = 'left',
 	RESIZE_HANDLE_POSITION_RIGHT = 'right',
@@ -51,14 +53,24 @@ export default class UiSet extends mix(UiElement).with(PubSubMixin) {
 	}
 	
 	constructor( options = {} ) {
-		super(Object.assign({
+		super(new UiOptions(options, {
 			tag: 'div',
-			classes: SET_CLASS,
-			items: [],
-			resizeHandle: UiSet.makeDefaultResizeHandle(),
-			anchorMinWidth: true
-		}, options))
-
+			classes: SET_CLASS
+		}, {
+			items: {
+				type: Array,
+				dflt: []
+			},
+			resizeHandle: {
+				type: OBJ,
+				dflt: UiSet.makeDefaultResizeHandle()
+			},
+			anchorMinWidth: {
+				type: BOOL,
+				dflt: true
+			}
+		}))
+		
 		this._initTopics()
 
 		this._set = new Set()

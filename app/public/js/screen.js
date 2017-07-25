@@ -1,17 +1,18 @@
 import T from './TOPICS.js'
 import _ from './utility.js'
 import UiElement from './element.js'
+import UiOptions from './options.js'
 import Core from './core.js'
 
 const RESIZE_THROTTLE = 60 //ms
 
-export default class extends UiElement { 
+export default class UiScreen extends UiElement { 
 
 	constructor( options = {} ) {
-		super(Object.assign({
+		super(new UiOptions(options, {
 			tag: 'div',
 			classes: 'screen'
-		}, options))
+		}))
 
 		this._resizeTimeout = null
 
@@ -65,6 +66,5 @@ export default class extends UiElement {
 			dy: e.movementY
 		})
 	}
-
 }
 

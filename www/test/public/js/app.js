@@ -81,7 +81,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 	/******/__webpack_require__.p = "";
 	/******/
 	/******/ // Load entry module and return exports
-	/******/return __webpack_require__(__webpack_require__.s = 11);
+	/******/return __webpack_require__(__webpack_require__.s = 12);
 	/******/
 })(
 /************************************************************************/
@@ -101,13 +101,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 		return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj === 'undefined' ? 'undefined' : _typeof2(obj);
 	};
 
-	var STR = 'string',
-	    FN = 'function',
-	    OBJ = 'object',
-	    NUM = 'number',
-	    BOOL = 'boolean',
-	    SYM = 'symbol',
-	    UNDEF = 'undefined',
+	var TYPES = {
+		STR: 'string',
+		FN: 'function',
+		OBJ: 'object',
+		NUM: 'number',
+		BOOL: 'boolean',
+		SYM: 'symbol',
+		UNDEF: 'undefined'
+	},
 	    UCHAR = {
 		copyright: '©',
 		asterisk: '*'
@@ -116,6 +118,16 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 	    LT = '<',
 	    doc = document,
 	    body = doc.body;
+
+	Object.freeze(TYPES);
+	exports.TYPES = TYPES;
+	var STR = TYPES.STR,
+	    FN = TYPES.FN,
+	    OBJ = TYPES.OBJ,
+	    NUM = TYPES.NUM,
+	    BOOL = TYPES.BOOL,
+	    SYM = TYPES.SYM,
+	    UNDEF = TYPES.UNDEF;
 
 	var util = {
 		isFn: function isFn(fn) {
@@ -270,15 +282,296 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 		value: true
 	});
 
+	var _slicedToArray = function () {
+		function sliceIterator(arr, i) {
+			var _arr = [];var _n = true;var _d = false;var _e = undefined;try {
+				for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+					_arr.push(_s.value);if (i && _arr.length === i) break;
+				}
+			} catch (err) {
+				_d = true;_e = err;
+			} finally {
+				try {
+					if (!_n && _i["return"]) _i["return"]();
+				} finally {
+					if (_d) throw _e;
+				}
+			}return _arr;
+		}return function (arr, i) {
+			if (Array.isArray(arr)) {
+				return arr;
+			} else if (Symbol.iterator in Object(arr)) {
+				return sliceIterator(arr, i);
+			} else {
+				throw new TypeError("Invalid attempt to destructure non-iterable instance");
+			}
+		};
+	}();
+
+	var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+		return typeof obj === 'undefined' ? 'undefined' : _typeof2(obj);
+	} : function (obj) {
+		return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj === 'undefined' ? 'undefined' : _typeof2(obj);
+	};
+
+	var _createClass = function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+		};
+	}();
+
+	var _utility = __webpack_require__(0);
+
+	var _option = __webpack_require__(13);
+
+	var _option2 = _interopRequireDefault(_option);
+
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { default: obj };
+	}
+
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError("Cannot call a class as a function");
+		}
+	}
+
+	var WARN = 1,
+	    INFO = 1,
+	    UNDEF = _utility.TYPES.UNDEF,
+	    STR = _utility.TYPES.STR,
+	    BOOL = _utility.TYPES.BOOL,
+	    NUM = _utility.TYPES.NUM,
+	    FN = _utility.TYPES.FN,
+	    OBJ = _utility.TYPES.OBJ,
+	    SYM = _utility.TYPES.SYM;
+
+	var UiOptions = function () {
+		function UiOptions() {
+			var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+			var superOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+			var descriptors = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+			var base = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
+			_classCallCheck(this, UiOptions);
+
+			var $ = void 0;
+
+			if ((typeof superOptions === 'undefined' ? 'undefined' : _typeof(superOptions)) !== OBJ) {
+				throw new Error('Super options not an object');
+			}
+
+			if ((typeof descriptors === 'undefined' ? 'undefined' : _typeof(descriptors)) !== OBJ) {
+				throw new Error('Descriptors not an object');
+			}
+
+			if (options instanceof UiOptions) {
+				$ = options;
+			} else if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) === OBJ) {
+				$ = this;
+
+				Object.defineProperty($, '_options', {
+					value: new Map()
+				});
+
+				Object.defineProperty($, '_pending', {
+					value: new Map()
+				});
+
+				$.$addOptions(options);
+			} else {
+				throw new Error('Passed options not a UiOptions instance or object');
+			}
+
+			$.$addOptions(superOptions);
+			$.$addDescriptors(descriptors);
+			$.$checkPendingOptions(!!base);
+
+			return $;
+		}
+
+		_createClass(UiOptions, [{
+			key: '$addDescriptors',
+			value: function $addDescriptors(descriptors) {
+				var _this = this;
+
+				var _iteratorNormalCompletion = true;
+				var _didIteratorError = false;
+				var _iteratorError = undefined;
+
+				try {
+					var _loop = function _loop() {
+						var _step$value = _slicedToArray(_step.value, 2),
+						    name = _step$value[0],
+						    des = _step$value[1];
+
+						if (_this._options.has(name)) {
+							throw new Error('Duplicate descriptor defined for class option [%s]', name);
+						}
+						_this._options.set(name, new _option2.default(des, name));
+
+						Object.defineProperty(_this, name, {
+							enumerable: true,
+							get: function get() {
+								return _this._options.get(name).value();
+							}
+						});
+					};
+
+					for (var _iterator = Object.entries(descriptors)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+						_loop();
+					}
+				} catch (err) {
+					_didIteratorError = true;
+					_iteratorError = err;
+				} finally {
+					try {
+						if (!_iteratorNormalCompletion && _iterator.return) {
+							_iterator.return();
+						}
+					} finally {
+						if (_didIteratorError) {
+							throw _iteratorError;
+						}
+					}
+				}
+			}
+		}, {
+			key: '$addOptions',
+			value: function $addOptions(options) {
+				var _iteratorNormalCompletion2 = true;
+				var _didIteratorError2 = false;
+				var _iteratorError2 = undefined;
+
+				try {
+					for (var _iterator2 = Object.entries(options)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+						var _step2$value = _slicedToArray(_step2.value, 2),
+						    _name = _step2$value[0],
+						    option = _step2$value[1];
+
+						if (this._options.has(_name)) {
+							this._options.get(_name).value(option);
+						} else {
+							if (!this._pending.has(_name)) {
+								this._pending.set(_name, []);
+							}
+							this._pending.get(_name).push(option);
+						}
+					}
+				} catch (err) {
+					_didIteratorError2 = true;
+					_iteratorError2 = err;
+				} finally {
+					try {
+						if (!_iteratorNormalCompletion2 && _iterator2.return) {
+							_iterator2.return();
+						}
+					} finally {
+						if (_didIteratorError2) {
+							throw _iteratorError2;
+						}
+					}
+				}
+			}
+		}, {
+			key: '$checkPendingOptions',
+			value: function $checkPendingOptions() {
+				var _this2 = this;
+
+				var base = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+				var _iteratorNormalCompletion3 = true;
+				var _didIteratorError3 = false;
+				var _iteratorError3 = undefined;
+
+				try {
+					var _loop2 = function _loop2() {
+						var _step3$value = _slicedToArray(_step3.value, 2),
+						    name = _step3$value[0],
+						    optionList = _step3$value[1];
+
+						if (_this2._options.has(name)) {
+							_this2._options.get(name).values(_this2._pending.get(name), true);
+							_this2._pending.delete(name);
+						} else if (base) {
+							WARN && console.warn('No descriptor defined for class option [%s]', name);
+
+							Object.defineProperty(_this2, name, {
+								enumerable: true,
+								get: function get() {
+									return _this2._pending.get(name)[0];
+								}
+							});
+						}
+					};
+
+					for (var _iterator3 = this._pending[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+						_loop2();
+					}
+				} catch (err) {
+					_didIteratorError3 = true;
+					_iteratorError3 = err;
+				} finally {
+					try {
+						if (!_iteratorNormalCompletion3 && _iterator3.return) {
+							_iterator3.return();
+						}
+					} finally {
+						if (_didIteratorError3) {
+							throw _iteratorError3;
+						}
+					}
+				}
+			}
+		}]);
+
+		return UiOptions;
+	}();
+
+	exports.default = UiOptions;
+
+	/***/
+},
+/* 2 */
+/***/function (module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	var TOPICS = {
+		MOUSE_UP: '/input/mouseup',
+		MOUSE_DOWN: '/input/mousedown',
+		MOUSE_MOVE: '/input/mousemove',
+		SCREEN_SIZE: '/screen/size'
+	};
+
+	exports.default = Object.freeze(TOPICS);
+
+	/***/
+},
+/* 3 */
+/***/function (module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
 	var _utility = __webpack_require__(0);
 
 	var _utility2 = _interopRequireDefault(_utility);
 
-	var _mixin = __webpack_require__(6);
+	var _mixin = __webpack_require__(7);
 
 	var _mixin2 = _interopRequireDefault(_mixin);
 
-	var _pubsub = __webpack_require__(7);
+	var _pubsub = __webpack_require__(8);
 
 	var _pubsub2 = _interopRequireDefault(_pubsub);
 
@@ -333,7 +626,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 	/***/
 },
-/* 2 */
+/* 4 */
 /***/function (module, exports, __webpack_require__) {
 
 	"use strict";
@@ -356,6 +649,10 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 	var _utility2 = _interopRequireDefault(_utility);
 
+	var _options2 = __webpack_require__(1);
+
+	var _options3 = _interopRequireDefault(_options2);
+
 	function _interopRequireDefault(obj) {
 		return obj && obj.__esModule ? obj : { default: obj };
 	}
@@ -366,17 +663,35 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 		}
 	}
 
+	var UNDEF = _utility.TYPES.UNDEF,
+	    STR = _utility.TYPES.STR,
+	    BOOL = _utility.TYPES.BOOL,
+	    NUM = _utility.TYPES.NUM,
+	    FN = _utility.TYPES.FN,
+	    OBJ = _utility.TYPES.OBJ,
+	    SYM = _utility.TYPES.SYM;
+
 	var UiElement = function () {
 		function UiElement() {
 			var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
 			_classCallCheck(this, UiElement);
 
-			this._options = Object.assign({
-				parent: null,
-				tag: '',
-				classes: ''
-			}, options);
+			this._options = new _options3.default(options, {}, {
+				parent: {
+					type: HTMLElement,
+					dflt: null
+				},
+				tag: {
+					type: STR,
+					dflt: ''
+				},
+				classes: {
+					type: STR,
+					dflt: '',
+					merge: true
+				}
+			}, true);
 
 			var _options = this._options,
 			    parent = _options.parent,
@@ -384,14 +699,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 			    classes = _options.classes;
 
 			this.parent(parent);
-
-			if (_utility2.default.nStr(tag)) {
-				throw new Error('Tag not a string');
-			}
-
-			if (_utility2.default.nStr(classes)) {
-				throw new Error('Classes not a string');
-			}
 
 			if (tag) {
 				this._el = _utility2.default.el(tag);
@@ -506,26 +813,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 	/***/
 },
-/* 3 */
-/***/function (module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	var TOPICS = {
-		MOUSE_UP: '/input/mouseup',
-		MOUSE_DOWN: '/input/mousedown',
-		MOUSE_MOVE: '/input/mousemove',
-		SCREEN_SIZE: '/screen/size'
-	};
-
-	exports.default = Object.freeze(TOPICS);
-
-	/***/
-},
-/* 4 */
+/* 5 */
 /***/function (module, exports, __webpack_require__) {
 
 	"use strict";
@@ -561,31 +849,35 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 		};
 	}();
 
-	var _TOPICS = __webpack_require__(3);
+	var _TOPICS = __webpack_require__(2);
 
 	var _TOPICS2 = _interopRequireDefault(_TOPICS);
 
-	var _CURSOR = __webpack_require__(5);
+	var _CURSOR = __webpack_require__(6);
 
 	var _CURSOR2 = _interopRequireDefault(_CURSOR);
-
-	var _mixin = __webpack_require__(6);
-
-	var _mixin2 = _interopRequireDefault(_mixin);
-
-	var _pubsub = __webpack_require__(7);
-
-	var _pubsub2 = _interopRequireDefault(_pubsub);
 
 	var _utility = __webpack_require__(0);
 
 	var _utility2 = _interopRequireDefault(_utility);
 
-	var _element = __webpack_require__(2);
+	var _mixin = __webpack_require__(7);
+
+	var _mixin2 = _interopRequireDefault(_mixin);
+
+	var _pubsub = __webpack_require__(8);
+
+	var _pubsub2 = _interopRequireDefault(_pubsub);
+
+	var _element = __webpack_require__(4);
 
 	var _element2 = _interopRequireDefault(_element);
 
-	var _core = __webpack_require__(1);
+	var _options = __webpack_require__(1);
+
+	var _options2 = _interopRequireDefault(_options);
+
+	var _core = __webpack_require__(3);
 
 	var _core2 = _interopRequireDefault(_core);
 
@@ -614,6 +906,13 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 	var LOG = 0,
 	    INFO = 0,
 	    WARN = 0,
+	    UNDEF = _utility.TYPES.UNDEF,
+	    STR = _utility.TYPES.STR,
+	    BOOL = _utility.TYPES.BOOL,
+	    NUM = _utility.TYPES.NUM,
+	    FN = _utility.TYPES.FN,
+	    OBJ = _utility.TYPES.OBJ,
+	    SYM = _utility.TYPES.SYM,
 	    MIN_SET_SIZE = 0,
 	    RESIZE_HANDLE_POSITION_LEFT = 'left',
 	    RESIZE_HANDLE_POSITION_RIGHT = 'right',
@@ -637,7 +936,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 		RESIZE_MOUSE_MOVE_LEFT: '/event/resize/mousemove/left',
 		RESIZE_MOUSE_MOVE_RIGHT: '/event/resize/mousemove/right'
 	});
-
 	exports.TOPICS = TOPICS;
 
 	var UiSet = function (_mix$with) {
@@ -658,13 +956,23 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 			_classCallCheck(this, UiSet);
 
-			var _this = _possibleConstructorReturn(this, (UiSet.__proto__ || Object.getPrototypeOf(UiSet)).call(this, Object.assign({
+			var _this = _possibleConstructorReturn(this, (UiSet.__proto__ || Object.getPrototypeOf(UiSet)).call(this, new _options2.default(options, {
 				tag: 'div',
-				classes: SET_CLASS,
-				items: [],
-				resizeHandle: UiSet.makeDefaultResizeHandle(),
-				anchorMinWidth: true
-			}, options)));
+				classes: SET_CLASS
+			}, {
+				items: {
+					type: Array,
+					dflt: []
+				},
+				resizeHandle: {
+					type: OBJ,
+					dflt: UiSet.makeDefaultResizeHandle()
+				},
+				anchorMinWidth: {
+					type: BOOL,
+					dflt: true
+				}
+			})));
 
 			_this._initTopics();
 
@@ -1164,7 +1472,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 	/***/
 },
-/* 5 */
+/* 6 */
 /***/function (module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1182,7 +1490,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 	/***/
 },
-/* 6 */
+/* 7 */
 /***/function (module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1236,7 +1544,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 	/***/
 },
-/* 7 */
+/* 8 */
 /***/function (module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1415,7 +1723,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 	/***/
 },
-/* 8 */
+/* 9 */
 /***/function (module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1428,13 +1736,13 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 	var _utility2 = _interopRequireDefault(_utility);
 
-	var _element = __webpack_require__(2);
+	var _options = __webpack_require__(1);
+
+	var _options2 = _interopRequireDefault(_options);
+
+	var _element = __webpack_require__(4);
 
 	var _element2 = _interopRequireDefault(_element);
-
-	var _core = __webpack_require__(1);
-
-	var _core2 = _interopRequireDefault(_core);
 
 	function _interopRequireDefault(obj) {
 		return obj && obj.__esModule ? obj : { default: obj };
@@ -1458,47 +1766,31 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 		}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 	}
 
-	var _class = function (_UiElement) {
-		_inherits(_class, _UiElement);
+	var UiIcon = function (_UiElement) {
+		_inherits(UiIcon, _UiElement);
 
-		function _class() {
+		function UiIcon() {
 			var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-			_classCallCheck(this, _class);
+			_classCallCheck(this, UiIcon);
 
-			var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, Object.assign({
+			var _this = _possibleConstructorReturn(this, (UiIcon.__proto__ || Object.getPrototypeOf(UiIcon)).call(this, new _options2.default(options, {
 				tag: 'div',
-				classes: 'icon',
-				imageTypeClass: 'icon-svg',
-				imageClass: ''
-			}, options)));
-
-			var _this$_options = _this._options,
-			    imageTypeClass = _this$_options.imageTypeClass,
-			    imageClass = _this$_options.imageClass;
-
-			if (_utility2.default.nStr(imageTypeClass)) {
-				throw new Error('image type class not a string');
-			}
-
-			if (_utility2.default.nStr(imageClass)) {
-				throw new Error('image class not a string');
-			}
-
-			_utility2.default.addCss(_this._el, imageTypeClass, imageClass);
+				classes: 'icon icon-svg'
+			})));
 
 			_this.render();
 			return _this;
 		}
 
-		return _class;
+		return UiIcon;
 	}(_element2.default);
 
-	exports.default = _class;
+	exports.default = UiIcon;
 
 	/***/
 },
-/* 9 */
+/* 10 */
 /***/function (module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1517,7 +1809,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 		};
 	}();
 
-	var _TOPICS = __webpack_require__(3);
+	var _TOPICS = __webpack_require__(2);
 
 	var _TOPICS2 = _interopRequireDefault(_TOPICS);
 
@@ -1525,11 +1817,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 	var _utility2 = _interopRequireDefault(_utility);
 
-	var _element = __webpack_require__(2);
+	var _element = __webpack_require__(4);
 
 	var _element2 = _interopRequireDefault(_element);
 
-	var _core = __webpack_require__(1);
+	var _options = __webpack_require__(1);
+
+	var _options2 = _interopRequireDefault(_options);
+
+	var _core = __webpack_require__(3);
 
 	var _core2 = _interopRequireDefault(_core);
 
@@ -1557,18 +1853,18 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 	var RESIZE_THROTTLE = 60; //ms
 
-	var _class = function (_UiElement) {
-		_inherits(_class, _UiElement);
+	var UiScreen = function (_UiElement) {
+		_inherits(UiScreen, _UiElement);
 
-		function _class() {
+		function UiScreen() {
 			var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-			_classCallCheck(this, _class);
+			_classCallCheck(this, UiScreen);
 
-			var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, Object.assign({
+			var _this = _possibleConstructorReturn(this, (UiScreen.__proto__ || Object.getPrototypeOf(UiScreen)).call(this, new _options2.default(options, {
 				tag: 'div',
 				classes: 'screen'
-			}, options)));
+			})));
 
 			_this._resizeTimeout = null;
 
@@ -1577,7 +1873,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 			return _this;
 		}
 
-		_createClass(_class, [{
+		_createClass(UiScreen, [{
 			key: '_postRender',
 			value: function _postRender() {
 				_core2.default.publish(_TOPICS2.default.SCREEN_SIZE, {
@@ -1632,14 +1928,14 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 			}
 		}]);
 
-		return _class;
+		return UiScreen;
 	}(_element2.default);
 
-	exports.default = _class;
+	exports.default = UiScreen;
 
 	/***/
 },
-/* 10 */
+/* 11 */
 /***/function (module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1700,15 +1996,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 		}
 	};
 
-	var _TOPICS = __webpack_require__(3);
+	var _TOPICS = __webpack_require__(2);
 
 	var _TOPICS2 = _interopRequireDefault(_TOPICS);
 
-	var _set = __webpack_require__(4);
+	var _set = __webpack_require__(5);
 
 	var _set2 = _interopRequireDefault(_set);
 
-	var _CURSOR = __webpack_require__(5);
+	var _CURSOR = __webpack_require__(6);
 
 	var _CURSOR2 = _interopRequireDefault(_CURSOR);
 
@@ -1716,11 +2012,15 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 	var _utility2 = _interopRequireDefault(_utility);
 
-	var _element = __webpack_require__(2);
+	var _options = __webpack_require__(1);
+
+	var _options2 = _interopRequireDefault(_options);
+
+	var _element = __webpack_require__(4);
 
 	var _element2 = _interopRequireDefault(_element);
 
-	var _core = __webpack_require__(1);
+	var _core = __webpack_require__(3);
 
 	var _core2 = _interopRequireDefault(_core);
 
@@ -1760,11 +2060,17 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 			_classCallCheck(this, UiToolbar);
 
-			var _this = _possibleConstructorReturn(this, (UiToolbar.__proto__ || Object.getPrototypeOf(UiToolbar)).call(this, Object.assign({
+			var _this = _possibleConstructorReturn(this, (UiToolbar.__proto__ || Object.getPrototypeOf(UiToolbar)).call(this, new _options2.default(options, {
 				tag: 'div',
-				classes: 'toolbar',
-				sets: []
-			}, options)));
+				classes: 'toolbar'
+			}, {
+				sets: {
+					type: Array,
+					dflt: []
+				}
+			})));
+
+			var sets = _this._options.sets;
 
 			_this._sets = [];
 			_this._anchors = null;
@@ -1774,8 +2080,6 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 				width: 0,
 				height: 0
 			};
-
-			var sets = _this._options.sets;
 
 			_this._initCallbacks();
 			_this._initSubscriptions();
@@ -2664,38 +2968,44 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 
 	/***/
 },
-/* 11 */
+/* 12 */
 /***/function (module, exports, __webpack_require__) {
 
 	"use strict";
+
+	var _TOPICS = __webpack_require__(2);
+
+	var _TOPICS2 = _interopRequireDefault(_TOPICS);
 
 	var _utility = __webpack_require__(0);
 
 	var _utility2 = _interopRequireDefault(_utility);
 
-	var _core = __webpack_require__(1);
+	var _core = __webpack_require__(3);
 
 	var _core2 = _interopRequireDefault(_core);
 
-	var _screen = __webpack_require__(9);
+	var _screen = __webpack_require__(10);
 
 	var _screen2 = _interopRequireDefault(_screen);
 
-	var _toolbar = __webpack_require__(10);
+	var _toolbar = __webpack_require__(11);
 
 	var _toolbar2 = _interopRequireDefault(_toolbar);
 
-	var _icon = __webpack_require__(8);
+	var _icon = __webpack_require__(9);
 
 	var _icon2 = _interopRequireDefault(_icon);
 
-	var _set = __webpack_require__(4);
+	var _set = __webpack_require__(5);
 
 	var _set2 = _interopRequireDefault(_set);
 
 	function _interopRequireDefault(obj) {
 		return obj && obj.__esModule ? obj : { default: obj };
 	}
+
+	var INFO = 1;
 
 	_utility2.default.ready(function () {
 		var doc = document,
@@ -2706,35 +3016,35 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 		}),
 		    navButtons = new _set2.default({
 			items: [new _icon2.default({
-				imageClass: 'icon-svg-left-arrow'
+				classes: 'icon-svg-left-arrow'
 			}), new _icon2.default({
-				imageClass: 'icon-svg-right-arrow'
+				classes: 'icon-svg-right-arrow'
 			})],
 			resizeHandle: null
 		}),
 		    pageButtons = new _set2.default({
 			items: [new _icon2.default({
-				imageClass: 'icon-svg-up-arrow'
+				classes: 'icon-svg-up-arrow'
 			}), new _icon2.default({
-				imageClass: 'icon-svg-down-arrow'
+				classes: 'icon-svg-down-arrow'
 			})]
 		}),
 		    menuButtons = new _set2.default({
 			items: [new _icon2.default({
-				imageClass: 'icon-svg-menu-text'
+				classes: 'icon-svg-menu-text'
 			}), new _icon2.default({
-				imageClass: 'icon-svg-menu-grid'
+				classes: 'icon-svg-menu-grid'
 			}), new _icon2.default({
-				imageClass: 'icon-svg-menu-expand'
+				classes: 'icon-svg-menu-expand'
 			}), new _icon2.default({
-				imageClass: 'icon-svg-menu-drop'
+				classes: 'icon-svg-menu-drop'
 			})]
 		}),
 		    viewButtons = new _set2.default({
 			items: [new _icon2.default({
-				imageClass: 'icon-svg-expand'
+				classes: 'icon-svg-expand'
 			}), new _icon2.default({
-				imageClass: 'icon-svg-contract'
+				classes: 'icon-svg-contract'
 			})]
 		}),
 		    toolbar = new _toolbar2.default({
@@ -2742,10 +3052,309 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 			sets: [navButtons, pageButtons, menuButtons, viewButtons]
 		});
 
-		_core2.default.subscribe('/screen/size', function (topic, data) {
+		INFO && _core2.default.subscribe(_TOPICS2.default.SCREEN_SIZE, function (topic, data) {
 			console.info(data.width + 'px  ' + data.height + 'px ');
 		});
 	});
+
+	/***/
+},
+/* 13 */
+/***/function (module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+		return typeof obj === 'undefined' ? 'undefined' : _typeof2(obj);
+	} : function (obj) {
+		return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj === 'undefined' ? 'undefined' : _typeof2(obj);
+	};
+
+	var _createClass = function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+		};
+	}();
+
+	var _utility = __webpack_require__(0);
+
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError("Cannot call a class as a function");
+		}
+	}
+
+	var INFO = 0,
+	    WARN = 0,
+	    UNDEF = _utility.TYPES.UNDEF,
+	    STR = _utility.TYPES.STR,
+	    BOOL = _utility.TYPES.BOOL,
+	    NUM = _utility.TYPES.NUM,
+	    FN = _utility.TYPES.FN,
+	    OBJ = _utility.TYPES.OBJ,
+	    SYM = _utility.TYPES.SYM,
+	    DEFAULT_DELIMITER = ' ';
+
+	var UiOption = function () {
+		_createClass(UiOption, null, [{
+			key: 'makeDefaultDescriptor',
+			value: function makeDefaultDescriptor() {
+				return {
+					merge: false,
+					type: STR,
+					dflt: ''
+				};
+			}
+		}]);
+
+		function UiOption() {
+			var descriptor = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+			var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'unknown';
+
+			_classCallCheck(this, UiOption);
+
+			this._name = name;
+			this._validateDescriptor(descriptor);
+			this._validateValue();
+		}
+
+		_createClass(UiOption, [{
+			key: '_validateDescriptor',
+			value: function _validateDescriptor(descriptor) {
+				if ((typeof descriptor === 'undefined' ? 'undefined' : _typeof(descriptor)) !== OBJ) {
+					throw new Error('[' + this._name + '] option descriptor not an object');
+				}
+
+				this._descriptor = Object.assign(UiOption.makeDefaultDescriptor(), descriptor);
+
+				var _descriptor = this._descriptor,
+				    merge = _descriptor.merge,
+				    delimiter = _descriptor.delimiter,
+				    type = _descriptor.type,
+				    validator = _descriptor.validator,
+				    values = _descriptor.values;
+
+				if (type !== void 0) {
+					if ((typeof type === 'undefined' ? 'undefined' : _typeof(type)) === STR) {
+						if (!Object.values(_utility.TYPES).includes(type)) {
+							throw new Error('[' + this._name + '] option descriptor type string must be valid against the typeof operator');
+						}
+					} else if ((typeof type === 'undefined' ? 'undefined' : _typeof(type)) !== FN) {
+						throw new Error('[' + this._name + '] option descriptor type is not a string or function');
+					}
+				}
+
+				if (merge !== void 0 && (typeof merge === 'undefined' ? 'undefined' : _typeof(merge)) !== BOOL) {
+					throw new Error('[' + this._name + '] option descriptor merge is not boolean');
+				}
+
+				if (merge) {
+					if (delimiter !== void 0 && (typeof delimiter === 'undefined' ? 'undefined' : _typeof(delimiter)) !== STR) {
+						throw new Error('[' + this._name + '] option descriptor delimiter not a string');
+					}
+
+					if (delimiter === void 0 && type === STR) {
+						this._descriptor.delimiter = DEFAULT_DELIMITER;
+					}
+				} else if (delimiter !== void 0) {
+					this._descriptor.delimiter = void 0;
+					WARN && console.warn('[%s] option descriptor delimiter ignored when not merging', this._name);
+				}
+
+				if (values !== void 0) {
+					if ((typeof values === 'undefined' ? 'undefined' : _typeof(values)) !== OBJ && !Array.isArray(values)) {
+						throw new Error('[' + this._name + '] option descriptor possible values must be specified as an array or object');
+					}
+				}
+
+				if (validator !== void 0) {
+					if ((typeof validator === 'undefined' ? 'undefined' : _typeof(validator)) !== FN) {
+						throw new Error('[' + this._name + '] option descriptor custom validator must be callable');
+					}
+				}
+			}
+		}, {
+			key: '_validateValue',
+			value: function _validateValue(v) {
+				var argValue = !!arguments.length,
+				    hasValue = this._descriptor.hasOwnProperty('value'),
+				    hasDefault = this._descriptor.hasOwnProperty('dflt'),
+				    _descriptor2 = this._descriptor,
+				    type = _descriptor2.type,
+				    dflt = _descriptor2.dflt,
+				    validator = _descriptor2.validator,
+				    merge = _descriptor2.merge,
+				    value = _descriptor2.value,
+				    values = _descriptor2.values;
+
+				if (argValue) {
+					value = v;
+				} else if (hasValue) {
+					if (Object.keys(this._descriptor).length === 1) {
+						return;
+					}
+				} else if (hasDefault) {
+					this._descriptor.value = value = dflt;
+				} else {
+					throw new Error('[' + this._name + '] option descriptor definition must include a value or a default value');
+				}
+
+				if (type !== void 0) {
+					if ((typeof type === 'undefined' ? 'undefined' : _typeof(type)) === STR) {
+						if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) !== type) {
+							throw new Error('[' + this._name + '] option value not of type: ' + type);
+						}
+					} else if ((typeof type === 'undefined' ? 'undefined' : _typeof(type)) === FN) {
+						if (!(value instanceof type) && value !== dflt) {
+							throw new Error('[' + this._name + '] option value not an instance of: ' + type.name);
+						}
+					} else {
+						WARN && console.warn('[%s] option type checking skipped due to unsupported type validation', this._name);
+					}
+				}
+
+				// todo: plain object checking
+				if (merge) {
+					if (type !== STR && type !== OBJ && !Array.isArray(value)) {
+						throw new Error('[' + this._name + '] option merging can only be performed on arrays, strings, and plain objects');
+					}
+				}
+
+				if (values) {
+					if (Array.isArray(values)) {
+						if (!values.includes(value)) {
+							INFO && console.dir(value);
+							throw new Error('[' + this._name + '] value not in possible valid values');
+						}
+					} else if ((typeof values === 'undefined' ? 'undefined' : _typeof(values)) === OBJ) {
+						if (!Object.values(values).includes(value)) {
+							INFO && console.dir(value);
+							throw new Error('[' + this._name + '] value not in possible valid values');
+						}
+					} else {
+						WARN && console.warn('[%s] values type checking skipped due to unsupported validation');
+					}
+				}
+
+				if (validator && !validator(value)) {
+					throw new Error('[' + this._name + '] value failed custom validation');
+				}
+			}
+
+			// todo: deep merge, plain object checking
+
+		}, {
+			key: '_mergeValue',
+			value: function _mergeValue(v) {
+				if ((typeof v === 'undefined' ? 'undefined' : _typeof(v)) === STR) {
+					this._descriptor.value += this._descriptor.value ? this._descriptor.delimiter + v : v;
+				} else if (Array.isArray(v)) {
+					this._descriptor.value = this._descriptor.value.concat(v);
+				} else if ((typeof v === 'undefined' ? 'undefined' : _typeof(v)) === OBJ) {
+					Object.assign(this._descriptor.value, v);
+				}
+			}
+		}, {
+			key: '_shiftValues',
+			value: function _shiftValues() {
+				var _descriptor3 = this._descriptor,
+				    type = _descriptor3.type,
+				    value = _descriptor3.value;
+
+				if (type === STR) {
+					this._descriptor.value = '';
+				} else if (Array.isArray(value)) {
+					this._descriptor.value = [];
+				} else if (type === OBJ) {
+					this._descriptor.value = {};
+				} else {
+					throw new Error('Unsupported merge type encountered while shifting values for option [' + this._name + ']');
+				}
+
+				return value;
+			}
+		}, {
+			key: 'value',
+			value: function value(v) {
+				if (!arguments.length) {
+					return this._descriptor.value;
+				}
+
+				this._validateValue(v);
+
+				if (this._descriptor.merge) {
+					this._mergeValue(v);
+				} else {
+					this._descriptor.value = v;
+				}
+			}
+		}, {
+			key: 'values',
+			value: function values(arr) {
+				var shift = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+				var shiftValues = void 0;
+
+				if (!Array.isArray(arr)) {
+					WARN && console.warn('[%s] option values must be specified in an array: treated as single value', this._name);
+					this.value(arr);
+					return;
+				}
+
+				if (this._descriptor.merge) {
+					if (shift) {
+						shiftValues = this._shiftValues();
+					}
+
+					var _iteratorNormalCompletion = true;
+					var _didIteratorError = false;
+					var _iteratorError = undefined;
+
+					try {
+						for (var _iterator = arr[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+							var v = _step.value;
+
+							this.value(v);
+						}
+					} catch (err) {
+						_didIteratorError = true;
+						_iteratorError = err;
+					} finally {
+						try {
+							if (!_iteratorNormalCompletion && _iterator.return) {
+								_iterator.return();
+							}
+						} finally {
+							if (_didIteratorError) {
+								throw _iteratorError;
+							}
+						}
+					}
+
+					if (shift && shiftValues) {
+						this.value(shiftValues);
+					}
+				} else {
+					if (arr.length > 1) {
+						WARN && console.warn('[%s] option descriptor ignored pending options while not merging', this._name);
+					}
+					this.value(arr[0]);
+				}
+			}
+		}]);
+
+		return UiOption;
+	}();
+
+	exports.default = UiOption;
 
 	/***/
 }]);
